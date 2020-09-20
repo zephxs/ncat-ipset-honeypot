@@ -1,1 +1,2 @@
-# ncat-honeypot
+# ncat-honeypot for ipset
+
