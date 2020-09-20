@@ -1,21 +1,25 @@
 
 #!/bin/bash
 
-
+# check prerequisite
 if ! command -v ipset &> /dev/null; then echo "ipset could not be found" && exit 1; fi
+if ! command -v ncat &> /dev/null; then echo "ncat could not be found" && exit 1; fi
 
-# IPTables create
+# IPTables create chain "blocklists"
 Iptables -N blocklists
 # make chain in 1st position :
 # delete if needed : iptables -D INPUT -j blocklists
-iptables -I INPUT 1 -j blocklists
-iptables -I FORWARD 1 -j blocklists
-iptables -I OUTPUT 1 -j blocklists
+for _CHX in INPUT OUTPUT FORWARD; do
+iptables -I "$_CHX" 1 -j blocklists
+done
 # create ipset list "honeypot"
-ipset create honeypot ip:hash family inet hashsize 1024 maxelem 10240
+ipset create honeypot ip:hash
 # add ipset to the blocklists chain :
--A blocklists -m set --match-set honeypot src -j DROP
--A blocklists -m set --match-set honeypot dst -j DROP
+iptables -A blocklists -m set --match-set honeypot src -j DROP
+iptables -A blocklists -m set --match-set honeypot dst -j DROP
+
+
+mkdir /root/blacklist
 
 cat > ncat-honeypot <<EOF
 #!/bin/bash
