@@ -1,6 +1,22 @@
 
 #!/bin/bash
 
+
+if ! command -v ipset &> /dev/null; then echo "ipset could not be found" && exit 1; fi
+
+# IPTables create
+Iptables -N blocklists
+# make chain in 1st position :
+# delete if needed : iptables -D INPUT -j blocklists
+iptables -I INPUT 1 -j blocklists
+iptables -I FORWARD 1 -j blocklists
+iptables -I OUTPUT 1 -j blocklists
+# create ipset list "honeypot"
+ipset create honeypot ip:hash family inet hashsize 1024 maxelem 10240
+# add ipset to the blocklists chain :
+-A blocklists -m set --match-set honeypot src -j DROP
+-A blocklists -m set --match-set honeypot dst -j DROP
+
 cat > ncat-honeypot <<EOF
 #!/bin/bash
 # open ncat listener on port 22
@@ -33,7 +49,7 @@ cat > /usr/local/bin/blacklist-check <<EOF
 IP1=$1
 ipset list -terse|grep Name|grep -v white|awk '{print $2}' >/root/blacklist/ipset-list
 
-# Credits :  https://github.com/marios-zindilis/Scripts/blob/master/Bash/is_ip.sh
+# Credits is_IP function :  https://github.com/marios-zindilis/Scripts/blob/master/Bash/is_ip.sh
 function is_IP() {
 if [ $(echo "$1" | grep -o '\.' | wc -l) -ne 3 ]; then
  echo "'$1' does not look like an IP Address (does not contain 3 dots).";
@@ -75,8 +91,6 @@ fi
 EOF
 
 
-
-
 cat > /etc/systemd/system/honeypot.service <<EOF
 [Unit]
 Description=honeypot ncat daemon
@@ -91,6 +105,11 @@ ExecStop=/usr/local/bin/killhony
 
 [Install]
 WantedBy=multi-user.target 
+EOF
+
+cat > /usr/local/bin/killhony <<EOF
+#!/bin/bash
+killall ncat-honeypot
 EOF
 
 systemctl daemon-reload
