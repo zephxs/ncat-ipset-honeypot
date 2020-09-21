@@ -10,7 +10,7 @@ Iptables -N blocklists
 # make chain in 1st position :
 # delete if needed : iptables -D INPUT -j blocklists
 for _CHX in INPUT OUTPUT FORWARD; do
-iptables -I "$_CHX" 1 -j blocklists
+iptables -I "\$_CHX" 1 -j blocklists
 done
 # create ipset list "honeypot"
 ipset create honeypot ip:hash
@@ -38,44 +38,44 @@ _TMP1=$(mktemp /root/blacklist/.hotmp1.XXX)
 _TMP2=$(mktemp /root/blacklist/.hotmp2.XXX)
 
 # get IP address from honeypot log
-cat "$_XLOG"|grep from > "$_TMP1"
-sed -i 's/Ncat\://g' "$_TMP1"
-cat "$_TMP1"|grep ':'|awk '{print $3}'|awk -F':' '{print $1}'|uniq > "$_TMP2"
+cat "\$_XLOG"|grep from > "\$_TMP1"
+sed -i 's/Ncat\://g' "\$_TMP1"
+cat "\$_TMP1"|grep ':'|awk '{print \$3}'|awk -F':' '{print \$1}'|uniq > "\$_TMP2"
 # check if not already in a Blacklist and add to "honeypot" blacklist
-for i in $(cat "$_TMP2"); do
-blacklist-check $i > /dev/null 2>&1 || ipset add honeypot "$i" && echo "$i ## $(date)" >> "$_XPOR"
+for i in \$(cat "\$_TMP2"); do
+blacklist-check \$i > /dev/null 2>&1 || ipset add honeypot "\$i" && echo "\$i ## \$(date)" >> "\$_XPOR"
 done
 EOF
 
 
 cat > /usr/local/bin/blacklist-check <<EOF
 #!/bin/bash
-IP1=$1
-ipset list -terse|grep Name|grep -v white|awk '{print $2}' >/root/blacklist/ipset-list
+IP1=\$1
+ipset list -terse|grep Name|grep -v white|awk '{print \$2}' >/root/blacklist/ipset-list
 
 # Credits is_IP function :  https://github.com/marios-zindilis/Scripts/blob/master/Bash/is_ip.sh
 function is_IP() {
-if [ $(echo "$1" | grep -o '\.' | wc -l) -ne 3 ]; then
- echo "'$1' does not look like an IP Address (does not contain 3 dots).";
+if [ \$(echo "\$1" | grep -o '\.' | wc -l) -ne 3 ]; then
+ echo "'\$1' does not look like an IP Address (does not contain 3 dots).";
  echo "### Usage ###"
- echo "$(basename $0) ip.ad.dr.es"
+ echo "\$(basename \$0) ip.ad.dr.es"
  exit 1;
-elif [ $(echo "$1" | tr '.' ' ' | wc -w) -ne 4 ]; then
- echo "'$1' does not look like an IP Address (does not contain 4 octets).";
+elif [ \$(echo "\$1" | tr '.' ' ' | wc -w) -ne 4 ]; then
+ echo "'\$1' does not look like an IP Address (does not contain 4 octets).";
  echo "### Usage ###"
- echo "$(basename $0) ip.ad.dr.es"
+ echo "\$(basename \$0) ip.ad.dr.es"
  exit 1;
 else
-for OCTET in $(echo $1 | tr '.' ' '); do
-if ! [[ "$OCTET" =~ ^[0-9]+$ ]]; then
- echo "'$1' is not an IP Address (octet '$OCTET' is not numeric).";
+for OCTET in \$(echo \$1 | tr '.' ' '); do
+if ! [[ "\$OCTET" =~ ^[0-9]+\$ ]]; then
+ echo "'\$1' is not an IP Address (octet '\$OCTET' is not numeric).";
  echo "### Usage ###"
- echo "$(basename $0) ip.ad.dr.es"
+ echo "\$(basename \$0) ip.ad.dr.es"
  exit 1;
-elif [[ "$OCTET" -lt 0 || "$OCTET" -gt 255 ]]; then
- echo "'$1' is not an IP Address (octet '$OCTET' in not in range 0-255).";
+elif [[ "\$OCTET" -lt 0 || "\$OCTET" -gt 255 ]]; then
+ echo "'\$1' is not an IP Address (octet '\$OCTET' in not in range 0-255).";
  echo "### Usage ###"
- echo "$(basename $0) ip.ad.dr.es"
+ echo "\$(basename \$0) ip.ad.dr.es"
  exit 1;
 fi
 done
@@ -84,13 +84,13 @@ return 0;
 }
 
 # Search for IP address in every blacklist configured in IPSET and exit 0 for scripts
-if is_IP "$IP1"; then
- for i in $(cat /root/blacklist/ipset-list); do 
-  ipset test $i $IP1 && exit 0
+if is_IP "\$IP1"; then
+ for i in \$(cat /root/blacklist/ipset-list); do 
+  ipset test \$i \$IP1 && exit 0
  done
 else
  echo "### Usage ###"
- echo "$(basename $0) ip.ad.dr.es"
+ echo "\$(basename \$0) ip.ad.dr.es"
 fi
 EOF
 
