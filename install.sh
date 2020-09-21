@@ -41,9 +41,9 @@ _TMP2=$(mktemp /root/blacklist/.hotmp2.XXX)
 cat "$_XLOG"|grep from > "$_TMP1"
 sed -i 's/Ncat\://g' "$_TMP1"
 cat "$_TMP1"|grep ':'|awk '{print $3}'|awk -F':' '{print $1}'|uniq > "$_TMP2"
-# check if not already in a Blacklist and add to "hony" blacklist
+# check if not already in a Blacklist and add to "honeypot" blacklist
 for i in $(cat "$_TMP2"); do
-blacklist-check $i > /dev/null 2>&1 || ipset add hony "$i" && echo "$i blacklisted on $(date)" >> "$_XPOR"
+blacklist-check $i > /dev/null 2>&1 || ipset add honeypot "$i" && echo "$i ## $(date)" >> "$_XPOR"
 done
 EOF
 
@@ -117,4 +117,4 @@ killall ncat-honeypot
 EOF
 
 systemctl daemon-reload
-
+Systemctl start honeypot.service
