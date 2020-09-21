@@ -10,7 +10,7 @@ Iptables -N blocklists
 # make chain in 1st position :
 # delete if needed : iptables -D INPUT -j blocklists
 for _CHX in INPUT OUTPUT FORWARD; do
-iptables -I "\$_CHX" 1 -j blocklists
+iptables -I "$_CHX" 1 -j blocklists
 done
 # create ipset list "honeypot"
 ipset create honeypot ip:hash
