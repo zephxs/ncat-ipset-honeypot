@@ -43,7 +43,7 @@ sed -i 's/Ncat\://g' "\$_TMP1"
 cat "\$_TMP1"|grep ':'|awk '{print \$3}'|awk -F':' '{print \$1}'|uniq > "\$_TMP2"
 # check if not already in a Blacklist and add to "honeypot" blacklist
 for i in \$(cat "\$_TMP2"); do
-blacklist-check \$i > /dev/null 2>&1 || ipset add honeypot "\$i" && echo "\$i ## \$(date)" >> "\$_XPOR"
+blacklist-check \$i > /dev/null 2>&1 || ipset add honeypot "\$i" && echo "\$i ## \$(date "+%d-%m-%Y %H:%M:%S")" >> "\$_XPOR"
 done
 EOF
 
