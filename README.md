@@ -1,4 +1,4 @@
-# ncat-honeypot for ipset 1.0
+# ncat-honeypot for ipset
 
 Script set for using simple ncat listener as honeypot for IPSet Iptables backend
 
