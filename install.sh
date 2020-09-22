@@ -21,7 +21,7 @@ iptables -A blocklists -m set --match-set honeypot dst -j DROP
 
 mkdir /root/blacklist
 
-cat > ncat-honeypot <<EOF
+cat > /usr/local/bin/ncat-honeypot <<EOF
 #!/bin/bash
 # open ncat listener on port 22
 while true; do
