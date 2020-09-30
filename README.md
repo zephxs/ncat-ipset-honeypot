@@ -10,7 +10,7 @@ Simple Bash script-set for using ncat listener as honeypot for IPSet Iptables ba
 - **Install.sh** script is here for educational purpose to set IPSet for Iptables Blacklist and put scripts in place
 
 
-minimum system impact After few days:
+minimum system impact after a few days:
 ```
 USER    PID %CPU %MEM  START   TIME COMMAND
 root  19824  0.0  0.0  sept.21 0:00 ncat...
