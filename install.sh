@@ -20,7 +20,7 @@ iptables -A blocklists -m set --match-set honeypot dst -j DROP
 
 # copy scripts to path
 mkdir /root/blacklist
-for _SCR in blacklist-check killhony ncat-honeypot honeypot-banscript; do
+for _SCR in blacklist-check killhony ncat-honeypot honeypot-banscript ipset-report; do
 cp "$_SCR" /usr/local/bin/
 done
 
