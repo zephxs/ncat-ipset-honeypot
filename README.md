@@ -8,7 +8,7 @@ Simple Bash script-set for using ncat listener as honeypot for IPSet Iptables ba
 - **ipset-report** script is used to show statistics
 - **blacklist-check** script can be used manually to find an IP in every configured IPSet lists
 - **Install.sh** script is here for educational purpose to set IPSet for Iptables Blacklist and put scripts in place
-- **ncat** package from the nmap team is used : https://nmap.org/ncat/
+- **ncat** package from the nmap team is used : `ncat` on debian, `nmap-ncat` on centos..
 
 
 minimum system impact after a few days:
