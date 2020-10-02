@@ -55,7 +55,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 1     603K  182M blocklists  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 
 #######################################
-### blocked ip the last days :
+### blocked ip :
 - 7 days ago: 21 IP addess blocked
 - 6 days ago: 16 IP addess blocked
 - 5 days ago: 14 IP addess blocked
@@ -64,6 +64,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 - 2 days ago: 7 IP addess blocked
 - 1 days ago: 13 IP addess blocked
 - 0 days ago: 10 IP addess blocked
+
 #######################################
 ```
 
