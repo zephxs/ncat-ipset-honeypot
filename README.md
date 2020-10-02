@@ -11,19 +11,20 @@ Simple Bash script-set for using ncat listener as honeypot for IPSet Iptables ba
 - **ncat** package from the nmap team is used : `ncat` on debian, `nmap-ncat` on centos..
 
 
-minimum system impact after a few days:
+minimum system impact after 7 days:
 ```
 USER    PID %CPU %MEM  START   TIME COMMAND
 root  19824  0.0  0.0  sept.21 0:00 ncat...
 ```
 
-sample ipset-report script:
+ipset-report sample:
 
 ```
 #######################################
 ####### configured ipset lists: #######
 #######################################
 
+...
 #######################################
 ### IPSet list : geoblock
 ### - 66274 IP/subnets blocked
