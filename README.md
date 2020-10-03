@@ -1,29 +1,28 @@
-# ncat-honeypot for ipset
+# ncat-honeypot for ipset/iptables firewall
 
-Simple Bash script-set for using ncat listener as honeypot for IPSet Iptables backend
+Simple Bash script-set for using ncat listener as honeypot for IPSet Iptables firewall backend.
 
 ### Auto Blacklist every attempt to reach port 22/tcp (ssh)
 
+- Use **ncat** package from the nmap team : `ncat` on debian, `nmap-ncat` on centos..
 - port can be set in **ncat-honeypot** script
-- **ipset-report** script is used to show statistics
 - **blacklist-check** script can be used manually to find an IP in every configured IPSet lists
+- **ipset-report** script is used to show statistics
 - **Install.sh** script is here for educational purpose to set IPSet for Iptables Blacklist and put scripts in place
-- **ncat** package from the nmap team is used : `ncat` on debian, `nmap-ncat` on centos..
 
 
-minimum system impact after 7 days:
+minimum system impact after 7 days on a frontal reverse proxy server:
 ```
 USER    PID %CPU %MEM  START   TIME COMMAND
 root  19824  0.0  0.0  sept.21 0:00 ncat...
 ```
 
-ipset-report sample:
+ipset-report script output sample:
 
 ```
 #######################################
 ####### configured ipset lists: #######
 #######################################
-
 ...
 #######################################
 ### IPSet list : geoblock
