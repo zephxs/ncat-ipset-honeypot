@@ -1,9 +1,7 @@
 #!/bin/bash
-
 # open ncat listener on port 22
 _XPORT='22'
 # execute honeyban script when IP is knocking
-
 while true; do
 ncat -vl --keep-open $_XPORT --exec "/usr/local/bin/honeypot-banscript" &>> /root/blacklist/honeypot.log 
 done
