@@ -4,7 +4,7 @@ _TMP=$(mktemp /tmp/.fireshXXX)
 # show list :
 echo "#######################################"
 echo "####### configured ipset lists: #######"
-for i in $(ipset list -terse |grep Name|awk '{print $2}'); do
+for i in $(ipset list -n); do
 echo "#######################################"
 echo "### IPSet list : $i"
 echo "### - $(ipset list $i|wc -l) IP/subnets blocked"
