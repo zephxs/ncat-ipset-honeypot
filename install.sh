@@ -14,11 +14,11 @@ iptables -I "$_CHX" 1 -j blocklists
 done
 # create ipset list "honeypot"
 ipset create honeypot ip:hash
-# add ipset to the blocklists chain :
+# add ipset 'honeypot' list to the blocklists chain :
 iptables -A blocklists -m set --match-set honeypot src -j DROP
 iptables -A blocklists -m set --match-set honeypot dst -j DROP
 # or add all ipset lists to newly created chain
-for _BLX in $(ipset list -n); do 
+for _BLX in $(ipset list -n); do
 iptables -A blocklists -m set --match-set $_BLX src -j DROP
 iptables -A blocklists -m set --match-set $_BLX dst -j DROP
 done
@@ -28,8 +28,11 @@ mkdir /root/blacklist
 for _SCR in blacklist-check killhony ncat-honeypot honeypot-banscript ipset-report; do
 cp "$_SCR" /usr/local/bin/
 done
-
-# copy service file and start
+# sample service file [Ctrl+C] if service "seems" to block
 cp honeypot.service /etc/systemd/system/honeypot.service
 systemctl daemon-reload
-Systemctl start honeypot.service
+systemctl start honeypot.service
+# check honeypot configured port 
+ss -tlpn|grep -w 22
+LISTEN 0      10           0.0.0.0:22         0.0.0.0:*    users:(("ncat",pid=1041,fd=4))
+LISTEN 0      10              [::]:22            [::]:*    users:(("ncat",pid=1041,fd=3))
