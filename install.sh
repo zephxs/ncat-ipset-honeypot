@@ -34,5 +34,7 @@ systemctl daemon-reload
 systemctl start honeypot.service
 # check honeypot configured port 
 ss -tlpn|grep -w 22
+```
 LISTEN 0      10           0.0.0.0:22         0.0.0.0:*    users:(("ncat",pid=1041,fd=4))
 LISTEN 0      10              [::]:22            [::]:*    users:(("ncat",pid=1041,fd=3))
+```
