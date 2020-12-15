@@ -13,8 +13,8 @@ Simple Bash script-set for using ncat listener as honeypot for IPSet Iptables fi
 
 minimum system impact after 7 days on a frontal reverse proxy server:
 ```
-USER    PID %CPU %MEM  START   TIME COMMAND
-root  19824  0.0  0.0  sept.21 0:00 ncat...
+USER  PID    %CPU %MEM  START   TIME COMMAND
+root  15243  0.0  0.0   déc.08  0:00 ncat -vl --keep-open 22 --exec /usr/local/bin/honeypot-banscript
 ```
 
 ipset-report script output sample:
