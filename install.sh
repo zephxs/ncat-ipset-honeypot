@@ -28,7 +28,7 @@ mkdir /root/blacklist
 for _SCR in blacklist-check killhony ncat-honeypot honeypot-banscript ipset-report; do
 cp "$_SCR" /usr/local/bin/
 done
-# sample service file [Ctrl+C] if service "seems" to block
+# copy sample Systemd service file and start. [Ctrl+C] if service "seems" to block
 cp honeypot.service /etc/systemd/system/honeypot.service
 systemctl daemon-reload
 systemctl start honeypot.service
