@@ -26,45 +26,44 @@ ipset-report script output sample:
 ...
 #######################################
 ### IPSet list : geoblock
-### - 66274 IP/subnets blocked
+### - 66275 IP/subnets blocked
 ### - rejected traffic:
 # >source
--Packets: 37431   -Bytes: 1904K
+-Packets: 19201   -Bytes: 1186K
 # >dest
--Packets: 663   -Bytes: 39780
+-Packets: 10   -Bytes: 842
 
 #######################################
-### IPSet list : honeypot
-### - 152 IP/subnets blocked
+### IPSet list : hony
+### - 976 IP/subnets blocked
 ### - rejected traffic:
 # >source
--Packets: 5985   -Bytes: 353K
+-Packets: 3455   -Bytes: 199K
 # >dest
--Packets: 1406   -Bytes: 69840
+-Packets: 784   -Bytes: 40644
 
 #######################################
 ### Blocklists chain global drop :
-Chain INPUT (policy DROP 4684 packets, 271K bytes)
-num   pkts bytes target     prot opt in     out     source               destination
-1    1065K  310M blocklists  all  --  *      *       0.0.0.0/0            0.0.0.0/0
-Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
-num   pkts bytes target     prot opt in     out     source               destination
-1     766K  277M blocklists  all  --  *      *       0.0.0.0/0            0.0.0.0/0
-Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
-num   pkts bytes target     prot opt in     out     source               destination
-1     603K  182M blocklists  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 
+Chain INPUT (policy DROP 11372 packets, 853K bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+1     799K  192M blocklists  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+Chain OUTPUT (policy ACCEPT 1309K packets, 1318M bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+1    1310K 1318M blocklists  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+Chain FORWARD (policy DROP 105 packets, 6696 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+1     638K 1203M blocklists  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 #######################################
-### blocked ip :
-- 7 days ago: 21 IP addess blocked
-- 6 days ago: 16 IP addess blocked
-- 5 days ago: 14 IP addess blocked
-- 4 days ago: 9 IP addess blocked
-- 3 days ago: 10 IP addess blocked
-- 2 days ago: 7 IP addess blocked
-- 1 days ago: 13 IP addess blocked
-- 0 days ago: 10 IP addess blocked
-
+### blocked ip the last days :
+- 7 days ago: 9 IP addess blocked
+- 6 days ago: 6 IP addess blocked
+- 5 days ago: 8 IP addess blocked
+- 4 days ago: 8 IP addess blocked
+- 3 days ago: 15 IP addess blocked
+- 2 days ago: 14 IP addess blocked
+- 1 days ago: 12 IP addess blocked
+- 0 days ago: 0 IP addess blocked
 #######################################
 ```
 
