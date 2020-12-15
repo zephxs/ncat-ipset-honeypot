@@ -12,4 +12,5 @@ for i in $(cat "$_TMP"); do
 if ! blacklist-check $i > /dev/null 2>&1; then
 ipset add honeypot "$i" && echo "$i # blacklisted $(date "+%d-%m-%Y %H:%M:%S")" >> "$_XPOR"
 fi
+rm $_TMP
 done
