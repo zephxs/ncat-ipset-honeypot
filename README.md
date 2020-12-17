@@ -55,6 +55,18 @@ Chain FORWARD (policy DROP 105 packets, 6696 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
 1     638K 1203M blocklists  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 
+#######################################
+### blocked ip :
+- 7 days ago: 42 IP addess blocked
+- 6 days ago: 51 IP addess blocked
+- 5 days ago: 43 IP addess blocked
+- 4 days ago: 27 IP addess blocked
+- 3 days ago: 56 IP addess blocked
+- 2 days ago: 28 IP addess blocked
+- 1 days ago: 395 IP addess blocked
+- 0 days ago: 15 IP addess blocked
+
+#######################################
 
 ```
 
