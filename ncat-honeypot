@@ -1,5 +1,5 @@
 #!/bin/bash
-# open ncat listener on port 22
+# open ncat listener on port 22/tcp
 _XPORT='22'
 # execute honeyban script when IP is knocking
 while true; do
