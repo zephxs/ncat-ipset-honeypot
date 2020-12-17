@@ -34,7 +34,7 @@ ipset-report script output sample:
 -Packets: 10   -Bytes: 842
 
 #######################################
-### IPSet list : hony
+### IPSet list : honeypot
 ### - 976 IP/subnets blocked
 ### - rejected traffic:
 # >source
