@@ -14,3 +14,4 @@ ipset add honeypot "$i" && echo "$i # blacklisted $(date "+%d-%m-%Y %H:%M:%S")" 
 fi
 done
 rm $_TMP
+> $_XLOG
