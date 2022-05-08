@@ -1,0 +1,23 @@
+#!/bin/bash
+
+_TGT=blocklists
+_CHN="INPUT OUTPUT FORWARD"
+
+echo "##########################"
+echo "   Honeypot Chain Check"
+echo "##########################"
+echo
+for i in ${_CHN}; do
+  if ! iptables -nvL ${i} 1|grep -q ${_TGT}; then
+    echo "### Chain: $i - $_TGT not in 1st pos."; echo "Correcting..."
+    iptables -D ${i} -j ${_TGT}
+    iptables -I ${i} 1 -j ${_TGT}
+    echo "### OK"
+    iptables -nvL ${i} 1|grep -q ${_TGT}
+    echo
+  else
+    echo "### Chain: $i - $_TGT in 1st pos ..OK!"
+    iptables -nvL ${i} 1|grep ${_TGT}
+    echo
+  fi
+done

@@ -1,0 +1,21 @@
+#!/bin/bash
+### check if honeypot listen or send telegram
+### check if blocklists chain is in 1st position (docker..) and correct if needed
+_TGT=blocklists
+_CHN="INPUT OUTPUT FORWARD"
+
+if ! ss -tlpn|grep -wq '0:22 '; then 
+telegram-send "[LTS] Honeypot port 22 NOT LISTENING"
+fi
+
+for i in ${_CHN}; do
+  if ! iptables -nvL ${i} 1|grep -q ${_TGT}; then
+#    echo "### Chain: $i - $_TGT not in 1st pos."; echo "Correcting..."
+    iptables -D ${i} -j ${_TGT}
+    iptables -I ${i} 1 -j ${_TGT}
+    iptables -nvL ${i} 1|grep -q ${_TGT}
+  else
+#    echo "### Chain: $i - $_TGT in 1st pos ..OK!"
+    iptables -nvL ${i} 1|grep ${_TGT}
+  fi
+done

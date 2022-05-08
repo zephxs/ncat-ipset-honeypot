@@ -1,0 +1,16 @@
+#!/bin/bash
+### Send $@ to telegram channel
+GROUP_ID='-XXXXXXXXXX'
+BOT_TOKEN='XXXX_XXX:XXXXXX:XXXXX'
+
+if [ -z "$1" ]; then
+  echo "Usage: `basename $0` \"text message\""
+  echo "Add message text arguments"
+  exit 1 
+fi
+if [ "$#" -ne 1 ]; then
+    echo "You can pass only one argument. For string with spaces put it on quotes"
+    exit 1
+fi
+curl -s --data "text=$1" --data "chat_id=$GROUP_ID" 'https://api.telegram.org/bot'$BOT_TOKEN'/sendMessage' > /dev/null
+
