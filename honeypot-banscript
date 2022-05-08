@@ -9,8 +9,9 @@ grep from "$_XLOG" |awk '{print $4}'|grep ':'|awk -F: '{print $1}'|sort|uniq > "
 
 # check if not already in a Blacklist and add to "hony" blacklist
 for i in $(cat "$_TMP"); do
-if ! blacklist-check $i > /dev/null 2>&1; then
+if blacklist-check $i > /dev/null 2>&1; then
 ipset add honeypot "$i" && echo "$i # blacklisted $(date "+%d-%m-%Y %H:%M:%S")" >> "$_XPOR"
+telegram-send "[LTS] SSH Honeypot # $i got blacklisted"
 fi
 done
 rm $_TMP
