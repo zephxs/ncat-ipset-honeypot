@@ -21,7 +21,7 @@ done
 eval set -- "$_IP"
 
 _LISTS='/root/blacklist/logs/ipset-list.names'
-
+_LOGD='/root/blacklist/logs'
 # find all blacklist set in IPSET and write them in a text file
 ipset list -n >$_LISTS
 
@@ -41,7 +41,8 @@ for _LST in $(cat $_LISTS); do
 if [ "$_VERB" = 'true' ]; then
   if ipset test $_LST $_IP; then exit 1; else echo "# IP not found in any list"; fi
 else
-  if ipset test $_LST $_IP; then exit 1; fi
+find ${_LOGD}/ipset-all.ip  -mmin +60 -exec ipset save -f ${_LOGD}/ipset-all.ip \; || ipset save -f ${_LOGD}/ipset-all.ip
+  if grep -q $_IP ${_LOGD}/ipset-all.ip; then exit 1; fi
 fi
 done
 }
