@@ -34,6 +34,6 @@ else
   echo "- todays ban: $(cat /root/blacklist/horny-banlist|grep $_XDATE|wc -l) IP addess blocked"
 fi
 done
-echo
 echo "#######################################"
+echo
 rm -rf /tmp/.fire*
