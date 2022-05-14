@@ -20,28 +20,29 @@ done
 # set positional arguments in their proper place
 eval set -- "$_IP"
 
+find ${_LOGD}/ipset-all.ip  -mmin +60 -exec ipset save -f ${_LOGD}/ipset-all.ip \; || ipset save -f ${_LOGD}/ipset-all.ip
 _LISTS='/root/blacklist/logs/ipset-list.names'
 _LOGD='/root/blacklist/logs'
 # find all blacklist set in IPSET and write them in a text file
 ipset list -n >$_LISTS
 
 _ISANIP(){
-/usr/local/bin/_ISIP $_IP || exit 1
+_ISIP $_IP || exit 1
 if [[ "$_IP" =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
 [ "$_VERB" = 'true' ] && echo "# IP is Valid"
-  _IPRC=0
+#  _IPRC=0
 else
 [ "$_VERB" = 'true' ] && echo "# string is NOT an IP.. skip"
   exit 1
 fi
+[ "$_VERB" = 'true' ] && echo
 }
 
 _ISINBL(){
 for _LST in $(cat $_LISTS); do 
 if [ "$_VERB" = 'true' ]; then
-  if ipset test $_LST $_IP; then exit 1; else echo "# IP not found in any list"; fi
+  if ipset test $_LST $_IP; then exit 1; fi
 else
-find ${_LOGD}/ipset-all.ip  -mmin +60 -exec ipset save -f ${_LOGD}/ipset-all.ip \; || ipset save -f ${_LOGD}/ipset-all.ip
   if grep -q $_IP ${_LOGD}/ipset-all.ip; then exit 1; fi
 fi
 done
