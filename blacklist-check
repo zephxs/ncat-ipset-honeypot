@@ -1,36 +1,31 @@
 #!/bin/bash
+### return 0 if IP is valid IPv4 and if NOT already in IPset blacklists
+### 
 #set -x
 _IP=''
 while (( "$#" )); do
   case "$1" in
-    -v|--verbose)
-      _VERB='true'
+    -v|--verbose) _VERB='true'
       shift
       ;;
-    -*|--*=) # unsupported flags
-      echo "Error: Unsupported flag $1" >&2
+    -*|--*=) echo "Error: Unsupported flag $1" >&2
       exit 1
       ;;
-    *) # preserve positional arguments
-      _IP="$1"
+    *) _IP="$1"
       shift
       ;;
   esac
 done
-# set positional arguments in their proper place
 eval set -- "$_IP"
 
-find ${_LOGD}/ipset-all.ip  -mmin +60 -exec ipset save -f ${_LOGD}/ipset-all.ip \; || ipset save -f ${_LOGD}/ipset-all.ip
-_LISTS='/root/blacklist/logs/ipset-list.names'
+# refresh ipset all IP list for quick check
+find ${_LOGD}/ipset-all.ip -mmin +60 -exec ipset save -f ${_LOGD}/ipset-all.ip \; || ipset save -f ${_LOGD}/ipset-all.ip
 _LOGD='/root/blacklist/logs'
-# find all blacklist set in IPSET and write them in a text file
-ipset list -n >$_LISTS
 
 _ISANIP(){
 _ISIP $_IP || exit 1
 if [[ "$_IP" =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
 [ "$_VERB" = 'true' ] && echo "# IP is Valid"
-#  _IPRC=0
 else
 [ "$_VERB" = 'true' ] && echo "# string is NOT an IP.. skip"
   exit 1
@@ -39,7 +34,7 @@ fi
 }
 
 _ISINBL(){
-for _LST in $(cat $_LISTS); do 
+for _LST in $(ipset list -n); do 
 if [ "$_VERB" = 'true' ]; then
   if ipset test $_LST $_IP; then exit 1; fi
 else
@@ -52,6 +47,5 @@ done
 [ "$_VERB" = 'true' ] && echo "### Blacklist-Check IP = $_IP "
 _ISANIP
 _ISINBL
-
-#[ "$_RC" = 0 -a "$_IPRC" = 0 ] && exit 0
+# return 0 if reach
 exit 0
