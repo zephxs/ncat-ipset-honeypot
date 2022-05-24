@@ -1,11 +1,27 @@
 #!/bin/bash
 ### return 0 if IP is valid IPv4 and if NOT already in IPset blacklists
-### 
-#set -x
+# 2.0 - moved ip check to ipcalc-ng
+# 1.2 - add verbose option
+# 1.0 - add IP v4 string check
+# 0.9 - search if ip address is already in a configured ipset lists
+
+type ipcalc-ng &>/dev/null || { echo "ipcalc-ng not found.. exiting" && exit 1 ; }
 _IP=''
+
+_USAGE () {
+echo "### Usage:"
+echo "$0 192.168.1.1        # return 0 if \$1 is valid IPv4 address and if NOT already in IPset lists"
+echo "$0 -v 192.168.1.1     # '-v' for verbose output"
+echo
+exit 2
+}
+
 while (( "$#" )); do
   case "$1" in
     -v|--verbose) _VERB='true'
+      shift
+      ;;
+    -h|--help) _USAGE
       shift
       ;;
     -*|--*=) echo "Error: Unsupported flag $1" >&2
@@ -18,32 +34,28 @@ while (( "$#" )); do
 done
 eval set -- "$_IP"
 
-# refresh ipset all IP list for quick check
-find ${_LOGD}/ipset-all.ip -mmin +60 -exec ipset save -f ${_LOGD}/ipset-all.ip \; || ipset save -f ${_LOGD}/ipset-all.ip
-_LOGD='/root/blacklist/logs'
+
+[ -z "$_IP" ] && _USAGE
 
 _ISANIP(){
-_ISIP $_IP || exit 1
-if [[ "$_IP" =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
-[ "$_VERB" = 'true' ] && echo "# IP is Valid"
+if [ "$_VERB" = 'true' ]; then
+  ipcalc-ng -c $_IP || exit 1
 else
-[ "$_VERB" = 'true' ] && echo "# string is NOT an IP.. skip"
-  exit 1
+  ipcalc-ng -cs $_IP || exit 1
 fi
-[ "$_VERB" = 'true' ] && echo
 }
 
 _ISINBL(){
 for _LST in $(ipset list -n); do 
 if [ "$_VERB" = 'true' ]; then
-  if ipset test $_LST $_IP; then exit 1; fi
+  if ipset test $_LST $_IP; then echo; exit 1; fi
 else
-  if grep -q $_IP ${_LOGD}/ipset-all.ip; then exit 1; fi
+  if ipset test $_LST $_IP >/dev/null 2>&1; then exit 1; fi
 fi
 done
+echo
 }
 
-# Search for IP address in every blacklist configured in IPSET and exit 0 for scripts
 [ "$_VERB" = 'true' ] && echo "### Blacklist-Check IP = $_IP "
 _ISANIP
 _ISINBL
