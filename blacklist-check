@@ -5,6 +5,11 @@
 # 1.0 - add IP v4 string check
 # 0.9 - search if ip address is already in a configured ipset lists
 
+### Preset and vars
+# refresh ipset all IP list for quick check
+_LOGD='/root/blacklist/logs'
+find ${_LOGD}/ipset-all.ip -mmin +60 -exec ipset save -f ${_LOGD}/ipset-all.ip \; || ipset save -f ${_LOGD}/ipset-all.ip
+# check for installed ipcalc-ng
 type ipcalc-ng &>/dev/null || { echo "ipcalc-ng not found.. exiting" && exit 1 ; }
 _IP=''
 
@@ -34,7 +39,6 @@ while (( "$#" )); do
 done
 eval set -- "$_IP"
 
-
 [ -z "$_IP" ] && _USAGE
 
 _ISANIP(){
@@ -48,8 +52,10 @@ fi
 _ISINBL(){
 for _LST in $(ipset list -n); do 
 if [ "$_VERB" = 'true' ]; then
+  if grep $_IP ${_LOGD}/ipset-all.ip; then exit 1; fi
   if ipset test $_LST $_IP; then echo; exit 1; fi
 else
+  if grep -q $_IP ${_LOGD}/ipset-all.ip; then exit 1; fi
   if ipset test $_LST $_IP >/dev/null 2>&1; then exit 1; fi
 fi
 done
