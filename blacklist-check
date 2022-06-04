@@ -52,11 +52,11 @@ fi
 _ISINBL(){
 for _LST in $(ipset list -n); do 
 if [ "$_VERB" = 'true' ]; then
-  if grep $_IP ${_LOGD}/ipset-all.ip; then exit 1; fi
-  if ipset test $_LST $_IP; then echo; exit 1; fi
+  if grep -m 1 $_IP ${_LOGD}/ipset-all.ip; then exit 1
+  elif ipset test $_LST $_IP; then echo; exit 1; fi
 else
-  if grep -q $_IP ${_LOGD}/ipset-all.ip; then exit 1; fi
-  if ipset test $_LST $_IP >/dev/null 2>&1; then exit 1; fi
+  if grep -q -m 1 $_IP ${_LOGD}/ipset-all.ip; then exit 1
+  elif ipset test $_LST $_IP >/dev/null 2>&1; then exit 1; fi
 fi
 done
 echo
