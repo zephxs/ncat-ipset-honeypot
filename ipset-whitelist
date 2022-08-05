@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# My IP protect II : Check and protect $YOURIPHERE with ipset 'nomatch'
+# add your IPs in the file below (space separated or one by line)
+_WHITELIST='/root/blacklist/whitelist'
+_LOGD='/root/blacklist/logs'
+
+# get all manual-backlist set
+ipset list manual-blacklist >${_LOGD}/.manual.blacklist
+
+# refresh ipset nomatch IP list for quick check
+find ${_LOGD}/ipset-nomatch.ip -mmin +60 && ipset list | grep nomatch > ${_LOGD}/ipset-nomatch.ip || ipset list |grep nomatch > ${_LOGD}/ipset-nomatch.ip
+
+# Check if whitelist IP is in blacklist without nomatch flag
+for _YIP in $(cat $_WHITELIST); do
+if grep -q $_YIP ${_LOGD}/.manual.blacklist; then
+  if ! grep $_YIP ${_LOGD}/.manual.blacklist|grep -q nomatch; then
+    ipset del manual-blacklist $_YIP
+    ipset add manual-blacklist $_YIP nomatch
+    echo "your IP $_YIP is added to protection"
+  fi
+fi
+done
+
+# Remove from nomatch if not in whitelis anymore
+for _WIP in $(awk '{print $1}' ${_LOGD}/ipset-nomatch.ip); do 
+  grep -qw $_WIP ${_WHITELIST} || { echo "$_WIP needs to be removed"; ipset del manual-blacklist $_WIP; }
+done
