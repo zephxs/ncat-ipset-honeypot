@@ -52,11 +52,9 @@ fi
 _ISINBL(){
 for _LST in $(ipset list -n); do 
 if [ "$_VERB" = 'true' ]; then
-  if grep -m 1 $_IP ${_LOGD}/ipset-all.ip; then exit 1
-  elif ipset test $_LST $_IP; then echo; exit 1; fi
+{ grep -m 1 -w $_IP ${_LOGD}/ipset-all.ip | grep $_LST && _FOUND=1 ; } || { ipset test $_LST $_IP && _FOUND=1 ; } 
 else
-  if grep -q -m 1 $_IP ${_LOGD}/ipset-all.ip; then exit 1
-  elif ipset test $_LST $_IP >/dev/null 2>&1; then exit 1; fi
+{ grep -q -m 1 -w $_IP ${_LOGD}/ipset-all.ip | grep $_LST && _FOUND=1 ; } || { ipset test $_LST $_IP >/dev/null 2>&1 && _FOUND=1 ; } 
 fi
 done
 echo
@@ -65,5 +63,6 @@ echo
 [ "$_VERB" = 'true' ] && echo "### Blacklist-Check IP = $_IP "
 _ISANIP
 _ISINBL
+[ "$_FOUND" = 1 ] && exit 1
 # return 0 if reach
 exit 0
