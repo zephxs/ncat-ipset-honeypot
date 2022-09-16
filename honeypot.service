@@ -1,8 +1,10 @@
 [Unit]
 Description=honeypot ncat daemon
 After=network.target syslog.target
+Requires=ipset.service iptables.service
 
 [Service]
+RemainAfterExit=yes
 Type=oneshot
 ExecStart=/usr/local/bin/ncat-honeypot
 RemainAfterExit=true
