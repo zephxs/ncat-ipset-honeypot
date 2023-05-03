@@ -1,6 +1,13 @@
 #!/bin/bash
-# open ncat listener on port 22/tcp
+# 1.1 - Ncat Honeypot
+# specify port with "-p 8000" 
+# port 22/tcp by default
 _XPORT='22'
+while getopts :p: OPT; do
+    case "${OPT}" in
+          p) _XPORT="$OPTARG";;
+     esac
+done
 _XLOG="/root/blacklist/honeypot.log"
 # execute honeyban script when IP is knocking
 while true; do
