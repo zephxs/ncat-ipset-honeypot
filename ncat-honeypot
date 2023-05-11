@@ -1,14 +1,17 @@
 #!/bin/bash
-# 1.1 - Ncat Honeypot
+### Simple Ncat Honeypot Port Trap
+### v1.1 - Added logging
 # specify port with "-p 8000" 
-# port 22/tcp by default
+# default : 22/tcp
+
 _XPORT='22'
+_XLOG="/root/blacklist/honeypot.log"
+
 while getopts :p: OPT; do
     case "${OPT}" in
           p) _XPORT="$OPTARG";;
      esac
 done
-_XLOG="/root/blacklist/honeypot.log"
 # execute honeyban script when IP is knocking
 while true; do
 ncat -vl --keep-open $_XPORT --exec "/usr/local/bin/honeypot-banscript" &>> $_XLOG
