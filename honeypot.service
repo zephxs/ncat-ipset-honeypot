@@ -1,15 +1,15 @@
 [Unit]
 Description=honeypot ncat daemon
-After=network.target syslog.target
-Requires=ipset.service iptables.service
+After=network.target syslog.target iptables.service ipset.service
 
 [Service]
-RemainAfterExit=yes
-Type=oneshot
-ExecStart=/usr/local/bin/ncat-honeypot
+Type=simple
+Restart=always
+ExecStart=/bin/bash /usr/local/bin/ncat-honeypot
 RemainAfterExit=true
-ExecStop=/usr/local/bin/killhony
+ExecStop=/bin/bash /usr/local/bin/killhony
 #StandardOutput=journal
 
 [Install]
-WantedBy=multi-user.target 
+WantedBy=multi-user.target
+
