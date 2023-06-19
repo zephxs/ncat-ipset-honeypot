@@ -1,9 +1,8 @@
 #!/bin/bash
 ### return 0 if IP is valid IPv4 and if NOT already in IPset blacklists
+# 2.1 - added whitelist specific check -w
 # 2.0 - moved ip check to ipcalc-ng
-# 1.2 - add verbose option
 # 1.0 - add IP v4 string check
-# 0.9 - search if ip address is already in a configured ipset lists
 
 ### Preset and vars
 # refresh ipset all IP list for quick check
@@ -15,8 +14,9 @@ _IP=''
 
 _USAGE () {
 echo "### Usage:"
-echo "$0 192.168.1.1        # return 0 if \$1 is valid IPv4 address and if NOT already in IPset lists"
-echo "$0 -v 192.168.1.1     # '-v' for verbose output"
+echo "$(basebame $0) 192.168.1.1        # return 0 if \$1 is valid IPv4 address and if NOT already in IPset lists"
+echo "$(basename $0) 192.168.1.1 -w     # '-w' for whitelist check"
+echo "$(basename $0) -v 192.168.1.1     # '-v' for verbose output"
 echo
 exit 2
 }
@@ -24,6 +24,9 @@ exit 2
 while (( "$#" )); do
   case "$1" in
     -v|--verbose) _VERB='true'
+      shift
+      ;;
+    -w|--whitelist) _WHITE='true'
       shift
       ;;
     -h|--help) _USAGE
@@ -57,12 +60,21 @@ else
 { grep -q -m 1 -w $_IP ${_LOGD}/ipset-all.ip | grep $_LST && _FOUND=1 ; } || { ipset test $_LST $_IP >/dev/null 2>&1 && _FOUND=1 ; } 
 fi
 done
-echo
+[ "$_VERB" = 'true' ] && echo
+}
+
+_ISINWL(){
+if [ "$_VERB" = 'true' ]; then
+{ grep whitelist ${_LOGD}/ipset-all.ip | grep -m 1 -w $_IP && _FOUND=1 ; } || { ipset test whitelist $_IP && _FOUND=1 ; } 
+else
+{ grep whitelist ${_LOGD}/ipset-all.ip |grep -q -m 1 -w $_IP && _FOUND=1 ; } || { ipset test whitelist $_IP >/dev/null 2>&1 && _FOUND=1 ; } 
+fi
+[ "$_VERB" = 'true' ] && echo
 }
 
 [ "$_VERB" = 'true' ] && echo "### Blacklist-Check IP = $_IP "
 _ISANIP
-_ISINBL
+[ "$_WHITE" = true ] && _ISINWL || _ISINBL
 [ "$_FOUND" = 1 ] && exit 1
 # return 0 if reach
 exit 0
